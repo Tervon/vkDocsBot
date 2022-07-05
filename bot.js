@@ -9,6 +9,7 @@ const bot = new Telegraf(functions.config().telegram.token);
 bot.telegram.setWebhook(
     `urlToWebhook`
 );
+const adminId = functions.config().telegram.adminId; // telegram admin account id goes here
 
 bot.on('inline_query', async ctx => {
     const locale = defineLocale(ctx.from.language_code);
@@ -152,8 +153,8 @@ bot.on('message', async ctx => {
                     return;
                 }
 
-                await ctx.forwardMessage('botAdminTgId');
-                await ctx.telegram.sendMessage('botAdminTgId',
+                await ctx.forwardMessage(adminId);
+                await ctx.telegram.sendMessage(adminId,
                  `<code>${ctx.chat.id}</code>, ${ctx.chat.username}, ${ctx.chat.first_name}, ${ctx.chat.last_name}, ${ctx.from.language_code}`,
                  { parse_mode: 'HTML' }
                 );
@@ -161,7 +162,7 @@ bot.on('message', async ctx => {
                 break;
             } //admin commands below
             case '/reply': {
-                if (ctx.chat.id == 'botAdminTgId') {
+                if (ctx.chat.id == adminId) {
                     const receiver = detectedText.split(' ')[1];
                     const text = detectedText.split(' ').splice(2).join(' ');
 
@@ -170,20 +171,20 @@ bot.on('message', async ctx => {
                 break;
             }
             case '/ban':{
-                if (ctx.chat.id == 'botAdminTgId') {
+                if (ctx.chat.id == adminId) {
                     const userToBan = detectedText.split(' ')[1];
                     await updateUser(userToBan, null, null, null, null, true);
-                    await ctx.telegram.sendMessage('botAdminTgId', 'User banned')
-                    .catch(async err => await ctx.telegram.sendMessage('botAdminTgId', `${err}`));
+                    await ctx.telegram.sendMessage(adminId, 'User banned')
+                    .catch(async err => await ctx.telegram.sendMessage(adminId, `${err}`));
                 }
                 break;
             }
             case '/unban': {
-                if (ctx.chat.id == 'botAdminTgId') {
+                if (ctx.chat.id == adminId) {
                     const userToUnban = detectedText.split(' ')[1];
                     await updateUser(userToUnban, null, null, null, null, false);
-                    await ctx.telegram.sendMessage('botAdminTgId', 'User unbanned')
-                    .catch(async err => await ctx.telegram.sendMessage('botAdminTgId', `${err}`));
+                    await ctx.telegram.sendMessage(adminId, 'User unbanned')
+                    .catch(async err => await ctx.telegram.sendMessage(adminId, `${err}`));
                 }
                 break;
             }
@@ -722,10 +723,10 @@ async function checkMsgMediaAndSend(ctx, receiver, text, feedback, sendErr) {
             }
         )
         .then(async () => {
-            if (feedback) await ctx.telegram.sendMessage('botAdminTgId', 'Message sended')
+            if (feedback) await ctx.telegram.sendMessage(adminId, 'Message sended')
         })
         .catch(async err => {
-            if (sendErr) await ctx.telegram.sendMessage('botAdminTgId', `${err}`)
+            if (sendErr) await ctx.telegram.sendMessage(adminId, `${err}`)
         });
         return;
     } else if (ctx.message.animation) {
@@ -734,10 +735,10 @@ async function checkMsgMediaAndSend(ctx, receiver, text, feedback, sendErr) {
             }
         )
         .then(async () => {
-            if (feedback) await ctx.telegram.sendMessage('botAdminTgId', 'Message sended')
+            if (feedback) await ctx.telegram.sendMessage(adminId, 'Message sended')
         })
         .catch(async err => {
-            if (sendErr) await ctx.telegram.sendMessage('botAdminTgId', `${err}`)
+            if (sendErr) await ctx.telegram.sendMessage(adminId, `${err}`)
         });
         return;
     } else if (ctx.message.video) {
@@ -746,10 +747,10 @@ async function checkMsgMediaAndSend(ctx, receiver, text, feedback, sendErr) {
             }
         )
         .then(async () => {
-            if (feedback) await ctx.telegram.sendMessage('botAdminTgId', 'Message sended')
+            if (feedback) await ctx.telegram.sendMessage(adminId, 'Message sended')
         })
         .catch(async err => {
-            if (sendErr) await ctx.telegram.sendMessage('botAdminTgId', `${err}`)
+            if (sendErr) await ctx.telegram.sendMessage(adminId, `${err}`)
         });
         return;
     } else if (ctx.message.document) {
@@ -758,10 +759,10 @@ async function checkMsgMediaAndSend(ctx, receiver, text, feedback, sendErr) {
             }
         )
         .then(async () => {
-            if (feedback) await ctx.telegram.sendMessage('botAdminTgId', 'Message sended')
+            if (feedback) await ctx.telegram.sendMessage(adminId, 'Message sended')
         })
         .catch(async err => {
-            if (sendErr) await ctx.telegram.sendMessage('botAdminTgId', `${err}`)
+            if (sendErr) await ctx.telegram.sendMessage(adminId, `${err}`)
         });
         return;
     } else if (ctx.message.audio) {
@@ -770,19 +771,19 @@ async function checkMsgMediaAndSend(ctx, receiver, text, feedback, sendErr) {
             }
         )
         .then(async () => {
-            if (feedback) await ctx.telegram.sendMessage('botAdminTgId', 'Message sended')
+            if (feedback) await ctx.telegram.sendMessage(adminId, 'Message sended')
         })
         .catch(async err => {
-            if (sendErr) await ctx.telegram.sendMessage('botAdminTgId', `${err}`)
+            if (sendErr) await ctx.telegram.sendMessage(adminId, `${err}`)
         });
         return;
     } else {
         await ctx.telegram.sendMessage(receiver, text)
         .then(async () => {
-            if (feedback) await ctx.telegram.sendMessage('botAdminTgId', 'Message sended')
+            if (feedback) await ctx.telegram.sendMessage(adminId, 'Message sended')
         })
         .catch(async err => {
-            if (sendErr) await ctx.telegram.sendMessage('botAdminTgId', `${err}`)
+            if (sendErr) await ctx.telegram.sendMessage(adminId, `${err}`)
         });
     }
 }
